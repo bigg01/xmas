@@ -16,9 +16,9 @@ update-deployment:
 	@sed -i 's|image: $(DOCKER_IMAGE)@sha256:[a-f0-9]*|image: $(shell cat image_digest.txt)|' deployment/deployment.yaml
 
 update-html:
-	@digest=$$(cat image_digest.txt); \
-	digest_last4=$${digest: -4}; \
-	sed -i "s|<span id=\"version\">.*</span>|<span id=\"version\">Version: $${digest_last4}</span>|" index.html
+	@digest=$(cat image_digest.txt); \
+	#digest_last4=$${digest: -4}; \
+	sed -i "s|<span id=\"version\">.*</span>|<span id=\"version\">Version: ${digest}</span>|" index.html
 
 apply:
 	@sed -i 's|image: $(DOCKER_IMAGE)@sha256:[a-f0-9]*|image: $(shell cat image_digest.txt)|' deployment/deployment.yaml
@@ -26,9 +26,9 @@ apply:
 	@kubectl create -f deployment/
 	@kubectl scale deployment/$(DEPLOYMENT_NAME) --replicas=2 -n $(NAMESPACE)
 
-all: docker-build docker-push get-digest update-html update-deployment
+all: docker-build docker-push get-digest update-html update-deployment apply
 
-scale:
+scale:s
 	@kubectl scale deployment/$(DEPLOYMENT_NAME) --replicas=$(REPLICAS) -n $(NAMESPACE)
 
 docker-run:

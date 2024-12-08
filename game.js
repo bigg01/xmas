@@ -1,6 +1,6 @@
 const names = ["Oliver", "Vanessa", "Timo", "Luan"];
 const nameColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1"];
-const giftIcons = ["🎁", "🎄", "🎅", "❄️"];
+const giftIcons = ["🎁", "🎄", "🎅", "❄️", "🐈", "🇨🇭", "💻"];
 const bonuses = [10, 20, 30, 50]; // Define possible bonuses
 const marvelNames = ["Spider-Man", "Iron Man", "Captain America", "Thor", "Hulk", "Black Widow", "Hawkeye", "Doctor Strange", "Black Panther", "Scarlet Witch"];
 
@@ -164,12 +164,18 @@ function initGame() {
         let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
         rankings.push({ name: playerName, score: score });
         rankings.sort((a, b) => b.score - a.score);
+        rankings = rankings.slice(0, 10); // Keep only the top 10 scores
         localStorage.setItem('rankings', JSON.stringify(rankings));
     }
 
     function displayRanking() {
         let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
         rankingList.innerHTML = rankings.map((entry, index) => `<li>${index + 1}. ${entry.name}: ${entry.score}</li>`).join('');
+    }
+
+    window.resetRanking = function() {
+        localStorage.removeItem('rankings');
+        displayRanking();
     }
 
     function removeGameElements() {
