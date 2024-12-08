@@ -2,6 +2,7 @@ const names = ["Oliver", "Vanessa", "Timo", "Luan"];
 const nameColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1"];
 const giftIcons = ["🎁", "🎄", "🎅", "❄️"];
 const bonuses = [10, 20, 30, 50]; // Define possible bonuses
+const marvelNames = ["Spider-Man", "Iron Man", "Captain America", "Thor", "Hulk", "Black Widow", "Hawkeye", "Doctor Strange", "Black Panther", "Scarlet Witch"];
 
 function createSnowflake() {
     const snowflake = document.createElement('div');
@@ -57,6 +58,7 @@ function initGame() {
     const gameContainer = document.querySelector('.game-container');
     const scoreDisplay = document.getElementById('score');
     const countdownDisplay = document.getElementById('countdown');
+    const rankingList = document.getElementById('rankingList');
     let isJumping = false;
     let gravity = 0.9;
     let score = 0;
@@ -108,6 +110,8 @@ function initGame() {
             if (obstaclePosition > 0 && obstaclePosition < 80 && parseInt(santa.style.bottom) < 40) {
                 clearInterval(timerId);
                 gameOver = true;
+                saveScore(score);
+                displayRanking();
                 alert('Game Over');
                 removeGameElements();
                 document.location.reload();
@@ -130,8 +134,6 @@ function initGame() {
 
     function updateCountdown() {
         const now = new Date();
-        // const christmas = new Date(now.getFullYear(), 11, 25); // December 25th
-        // today
         const christmas = new Date(now.getFullYear(), 11, 25); // December 25th
         if (now.getMonth() === 11 && now.getDate() > 25) {
             christmas.setFullYear(christmas.getFullYear() + 1);
@@ -157,6 +159,19 @@ function initGame() {
         gameContainer.appendChild(gift);
     }
 
+    function saveScore(score) {
+        const playerName = marvelNames[Math.floor(Math.random() * marvelNames.length)];
+        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
+        rankings.push({ name: playerName, score: score });
+        rankings.sort((a, b) => b.score - a.score);
+        localStorage.setItem('rankings', JSON.stringify(rankings));
+    }
+
+    function displayRanking() {
+        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
+        rankingList.innerHTML = rankings.map((entry, index) => `<li>${index + 1}. ${entry.name}: ${entry.score}</li>`).join('');
+    }
+
     function removeGameElements() {
         while (gameContainer.firstChild) {
             gameContainer.removeChild(gameContainer.firstChild);
@@ -167,6 +182,7 @@ function initGame() {
     setInterval(updateScore, 1000);
     const countdownInterval = setInterval(updateCountdown, 1000);
     updateCountdown(); // Initial call to display countdown immediately
+    displayRanking(); // Initial call to display ranking immediately
 }
 
 startGame();
