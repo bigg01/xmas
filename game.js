@@ -48,7 +48,7 @@ function startGame() {
 }
 
 function initGame(playerName) {
-    const snowman = document.getElementById('snowman');
+    const santa = document.getElementById('santa');
     const gameContainer = document.querySelector('.game-container');
     const scoreDisplay = document.getElementById('score');
     const countdownDisplay = document.getElementById('countdown');
@@ -86,22 +86,22 @@ function initGame(playerName) {
                     }
                     position -= 5;
                     position = position * gravity;
-                    snowman.style.bottom = position + 'px';
+                    santa.style.bottom = position + 'px';
                 }, 20);
             }
             position += 30;
             position = position * gravity;
-            snowman.style.bottom = position + 'px';
+            santa.style.bottom = position + 'px';
         }, 20);
     }
 
     function shootGift() {
         const gift = document.createElement('div');
         gift.classList.add('gift');
-        gift.style.left = snowman.offsetLeft + 'px';
+        gift.style.left = santa.offsetLeft + 'px';
         gameContainer.appendChild(gift);
 
-        let giftPosition = snowman.offsetLeft;
+        let giftPosition = santa.offsetLeft;
         let timerId = setInterval(function() {
             if (giftPosition > 600) {
                 clearInterval(timerId);
@@ -120,15 +120,13 @@ function initGame(playerName) {
         obstacle.style.left = obstaclePosition + 'px';
 
         let timerId = setInterval(function() {
-            if (obstaclePosition > 0 && obstaclePosition < 80 && parseInt(snowman.style.bottom) < 40) {
+            if (obstaclePosition > 0 && obstaclePosition < 80 && parseInt(santa.style.bottom) < 40) {
                 clearInterval(timerId);
                 gameOver = true;
                 saveScore(playerName, score);
                 displayRanking();
                 alert('Game Over');
-                while (gameContainer.firstChild) {
-                    gameContainer.removeChild(gameContainer.firstChild);
-                }
+                removeGameElements();
                 document.location.reload();
             }
             obstaclePosition -= 10;
@@ -171,6 +169,12 @@ function initGame(playerName) {
     function displayRanking() {
         let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
         rankingList.innerHTML = rankings.map((entry, index) => `<li>${index + 1}. ${entry.name}: ${entry.score}</li>`).join('');
+    }
+
+    function removeGameElements() {
+        while (gameContainer.firstChild) {
+            gameContainer.removeChild(gameContainer.firstChild);
+        }
     }
 
     generateObstacle();

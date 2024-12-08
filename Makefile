@@ -1,6 +1,7 @@
 DOCKER_IMAGE=docker.io/bigg01/santa:latest
 NAMESPACE=santa
 DEPLOYMENT_NAME=santa-claus-game
+VERSION=latest
 
 docker-build:
 	@docker build -t $(DOCKER_IMAGE) .
@@ -13,10 +14,11 @@ get-digest:
 
 update-deployment:
 	@sed -i 's|image: $(DOCKER_IMAGE)@sha256:[a-f0-9]*|image: $(shell cat image_digest.txt)|' deployment/deployment.yaml
-	@kubectl delete -f deployment/ > /dev/null 2>&1 || true
-	@kubectl create -f deployment/
+
 update-html:
-	@sed -i 's|<span id="version">.*</span>|<span id="version">Version: $(shell cat image_digest.txt)</span>|' index.html
+	@digest=$$(cat image_digest.txt); \
+	digest_last4=$${digest: -4}; \
+	sed -i "s|<span id=\"version\">.*</span>|<span id=\"version\">Version: $${digest_last4}</span>|" index.html
 
 apply:
 	@sed -i 's|image: $(DOCKER_IMAGE)@sha256:[a-f0-9]*|image: $(shell cat image_digest.txt)|' deployment/deployment.yaml
