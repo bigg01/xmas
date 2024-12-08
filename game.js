@@ -1,6 +1,6 @@
 const names = ["Oliver", "Vanessa", "Timo", "Luan"];
 const nameColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1"];
-const giftIcons = ["🎁", "🎄", "🎅", "❄️", "🐈", "🇨🇭", "💻"];
+const giftIcons = ["🎁", "🎄", "🎅", "❄️", "🐈", "🇨🇭", "💻", "⛄"];
 const bonuses = [10, 20, 30, 50]; // Define possible bonuses
 const marvelNames = ["Spider-Man", "Iron Man", "Captain America", "Thor", "Hulk", "Black Widow", "Hawkeye", "Doctor Strange", "Black Panther", "Scarlet Witch"];
 
@@ -143,7 +143,7 @@ function initGame() {
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        countdownDisplay.textContent = `Christmas in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        countdownDisplay.textContent = `Heiligabend in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
 
         if (diff <= 0) {
             clearInterval(countdownInterval);
