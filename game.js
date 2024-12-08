@@ -1,6 +1,7 @@
 const names = ["Oliver", "Vanessa", "Timo", "Luan"];
 const nameColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1"];
 const giftIcons = ["🎁", "🎄", "🎅", "❄️"];
+const bonuses = [10, 20, 30, 50]; // Define possible bonuses
 
 function createSnowflake() {
     const snowflake = document.createElement('div');
@@ -19,6 +20,11 @@ function createSnowflake() {
         const giftIndex = Math.floor(Math.random() * giftIcons.length);
         snowflake.textContent = giftIcons[giftIndex];
         snowflake.style.fontSize = '20px';
+        snowflake.classList.add('clickable-gift');
+        snowflake.addEventListener('click', () => {
+            applyBonus();
+            snowflake.remove();
+        });
     } else { // 80% chance for snowflakes
         snowflake.style.width = '10px';
         snowflake.style.height = '10px';
@@ -33,26 +39,24 @@ function createSnowflake() {
     }, 5000);
 }
 
+function applyBonus() {
+    const bonus = bonuses[Math.floor(Math.random() * bonuses.length)];
+    score += bonus;
+    scoreDisplay.textContent = `Score: ${score} (+${bonus})`;
+}
+
 setInterval(createSnowflake, 100);
 
 function startGame() {
-    const playerNameInput = document.getElementById('playerName');
-    const playerName = playerNameInput.value.trim();
-    if (playerName) {
-        document.querySelector('.name-form').style.display = 'none';
-        document.querySelector('.game-container').style.display = 'block';
-        initGame(playerName);
-    } else {
-        alert('Please enter your name');
-    }
+    document.querySelector('.game-container').style.display = 'block';
+    initGame();
 }
 
-function initGame(playerName) {
+function initGame() {
     const santa = document.getElementById('santa');
     const gameContainer = document.querySelector('.game-container');
     const scoreDisplay = document.getElementById('score');
     const countdownDisplay = document.getElementById('countdown');
-    const rankingList = document.getElementById('rankingList');
     let isJumping = false;
     let gravity = 0.9;
     let score = 0;
@@ -61,8 +65,6 @@ function initGame(playerName) {
     document.addEventListener('keydown', function(event) {
         if (event.code === 'Space' && !gameOver) {
             jump();
-        } else if (event.code === 'ArrowUp' && !gameOver) {
-            shootGift();
         }
     });
 
@@ -95,23 +97,6 @@ function initGame(playerName) {
         }, 20);
     }
 
-    function shootGift() {
-        const gift = document.createElement('div');
-        gift.classList.add('gift');
-        gift.style.left = santa.offsetLeft + 'px';
-        gameContainer.appendChild(gift);
-
-        let giftPosition = santa.offsetLeft;
-        let timerId = setInterval(function() {
-            if (giftPosition > 600) {
-                clearInterval(timerId);
-                gift.remove();
-            }
-            giftPosition += 10;
-            gift.style.left = giftPosition + 'px';
-        }, 20);
-    }
-
     function generateObstacle() {
         let obstaclePosition = 800;
         const obstacle = document.createElement('div');
@@ -123,8 +108,6 @@ function initGame(playerName) {
             if (obstaclePosition > 0 && obstaclePosition < 80 && parseInt(santa.style.bottom) < 40) {
                 clearInterval(timerId);
                 gameOver = true;
-                saveScore(playerName, score);
-                displayRanking();
                 alert('Game Over');
                 removeGameElements();
                 document.location.reload();
@@ -147,6 +130,8 @@ function initGame(playerName) {
 
     function updateCountdown() {
         const now = new Date();
+        // const christmas = new Date(now.getFullYear(), 11, 25); // December 25th
+        // today
         const christmas = new Date(now.getFullYear(), 11, 25); // December 25th
         if (now.getMonth() === 11 && now.getDate() > 25) {
             christmas.setFullYear(christmas.getFullYear() + 1);
@@ -157,18 +142,19 @@ function initGame(playerName) {
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         countdownDisplay.textContent = `Christmas in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+        if (diff <= 0) {
+            clearInterval(countdownInterval);
+            showGift();
+        }
     }
 
-    function saveScore(name, score) {
-        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
-        rankings.push({ name: name, score: score });
-        rankings.sort((a, b) => b.score - a.score);
-        localStorage.setItem('rankings', JSON.stringify(rankings));
-    }
-
-    function displayRanking() {
-        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
-        rankingList.innerHTML = rankings.map((entry, index) => `<li>${index + 1}. ${entry.name}: ${entry.score}</li>`).join('');
+    function showGift() {
+        const gift = document.createElement('div');
+        gift.classList.add('gift');
+        gift.style.left = '50%';
+        gift.style.bottom = '50%';
+        gameContainer.appendChild(gift);
     }
 
     function removeGameElements() {
@@ -179,7 +165,8 @@ function initGame(playerName) {
 
     generateObstacle();
     setInterval(updateScore, 1000);
-    setInterval(updateCountdown, 1000);
+    const countdownInterval = setInterval(updateCountdown, 1000);
     updateCountdown(); // Initial call to display countdown immediately
-    displayRanking(); // Initial call to display ranking immediately
 }
+
+startGame();
