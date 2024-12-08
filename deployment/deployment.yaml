@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: santa-claus-game
+  namespace: santa
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: santa-claus-game
+  template:
+    metadata:
+      labels:
+        app: santa-claus-game
+    spec:
+      containers:
+      - name: santa-claus-game
+        image: docker.io/bigg01/santa:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
