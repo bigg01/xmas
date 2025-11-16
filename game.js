@@ -481,4 +481,4 @@ try {
 
 createSnowflakes();
 displayRanking();
-document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, https://www.containerize.ch/';
+document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, <a href="https://www.containerize.ch">https://www.containerize.ch</a> ';
