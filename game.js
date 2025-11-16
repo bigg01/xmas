@@ -481,7 +481,7 @@ function winGame() {
         saveScore(score);
         displayRanking();
         setTimeout(() => {
-            if (confirm(`� YOU BEAT ALL LEVELS! �\n\nFinal Score: ${score}\n\nPlay again?`)) {
+            if (confirm(`🎄 YOU BEAT ALL LEVELS! 🎄\n\nFinal Score: ${score}\n\nPlay again?`)) {
                 document.location.reload();
             }
         }, 500);
@@ -494,6 +494,7 @@ function winGame() {
         countdown.textContent = `LEVEL ${currentLevel}`;
         
         setTimeout(() => {
+            gameOver = false; // Reset gameOver for next level
             let count = 3;
             countdown.textContent = count;
             
