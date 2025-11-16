@@ -480,4 +480,4 @@ try {
 
 createSnowflakes();
 displayRanking();
-document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile';
+document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on k8s homelab';
