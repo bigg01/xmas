@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: santa-backend
+  namespace: santa
+  labels:
+    app: santa-backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: santa-backend

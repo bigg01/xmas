@@ -531,19 +531,53 @@ function winGame() {
     }
 }
 
-window.globalRankings = window.globalRankings || JSON.parse(localStorage.getItem('rankings')) || [];
+// Backend API URL - change this to your server URL
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:8080/api' 
+    : '/api';  // Use relative path in production
+
+window.globalRankings = [];
+
+// Load rankings from backend on page load
+function loadRankings() {
+    fetch(`${API_URL}/scores`)
+        .then(response => response.json())
+        .then(data => {
+            window.globalRankings = data.rankings || [];
+            displayRanking();
+        })
+        .catch(err => {
+            console.error('Failed to load rankings:', err);
+            // Fallback to localStorage
+            window.globalRankings = JSON.parse(localStorage.getItem('rankings')) || [];
+            displayRanking();
+        });
+}
 
 function saveScore(score) {
     const name = playerName || spaceHeroes[Math.floor(Math.random() * spaceHeroes.length)];
     const level = currentLevel || 1;
-    window.globalRankings.push({ name: name, score: score, level: level });
-    window.globalRankings.sort((a, b) => b.score - a.score);
-    window.globalRankings = window.globalRankings.slice(0, 10);
-    localStorage.setItem('rankings', JSON.stringify(window.globalRankings));
-    try {
-        const channel = new BroadcastChannel('rankings');
-        channel.postMessage({ type: 'update', rankings: window.globalRankings });
-    } catch (e) {}
+    
+    // Save to backend
+    fetch(`${API_URL}/scores`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, score, level })
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.globalRankings = data.rankings || [];
+        displayRanking();
+    })
+    .catch(err => {
+        console.error('Failed to save score:', err);
+        // Fallback to localStorage
+        window.globalRankings.push({ name, score, level });
+        window.globalRankings.sort((a, b) => b.score - a.score);
+        window.globalRankings = window.globalRankings.slice(0, 10);
+        localStorage.setItem('rankings', JSON.stringify(window.globalRankings));
+        displayRanking();
+    });
 }
 
 function displayRanking() {
@@ -552,6 +586,15 @@ function displayRanking() {
     
     const list = document.getElementById('rankingList');
     list.innerHTML = '';
+    
+    if (!window.globalRankings || window.globalRankings.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No scores yet!';
+        li.style.opacity = '0.5';
+        list.appendChild(li);
+        return;
+    }
+    
     window.globalRankings.forEach((entry, i) => {
         const li = document.createElement('li');
         const levelInfo = entry.level ? ` [L${entry.level}]` : '';
@@ -562,13 +605,21 @@ function displayRanking() {
 
 function resetRanking() {
     if (confirm('Reset all rankings?')) {
-        window.globalRankings = [];
-        localStorage.removeItem('rankings');
-        displayRanking();
-        try {
-            const channel = new BroadcastChannel('rankings');
-            channel.postMessage({ type: 'reset' });
-        } catch (e) {}
+        fetch(`${API_URL}/scores/reset`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.globalRankings = [];
+            displayRanking();
+        })
+        .catch(err => {
+            console.error('Failed to reset rankings:', err);
+            // Fallback to localStorage
+            window.globalRankings = [];
+            localStorage.removeItem('rankings');
+            displayRanking();
+        });
     }
 }
 
