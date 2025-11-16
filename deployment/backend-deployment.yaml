@@ -35,14 +35,14 @@ spec:
           httpGet:
             path: /api/scores
             port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 30
+          initialDelaySeconds: 1
+          periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /api/scores
             port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          initialDelaySeconds: 1
+          periodSeconds: 5
         volumeMounts:
         - name: data
           mountPath: /app/data
@@ -50,15 +50,4 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: santa-backend-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: santa-backend-pvc
-  namespace: santa
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+

@@ -38,8 +38,11 @@ func main() {
 		port = "8080"
 	}
 
+	// Bind to all interfaces
+	addr := "0.0.0.0:" + port
+
 	log.Printf("Server starting on port %s...", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
 func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {

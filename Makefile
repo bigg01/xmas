@@ -29,9 +29,8 @@ update-html:
 
 apply:
 	@sed -i 's|image: $(DOCKER_IMAGE)@sha256:[a-f0-9]*|image: $(shell cat image_digest.txt)|' deployment/deployment.yaml
-	@kubectl delete -f deployment/
-	@kubectl create -f deployment/
-	@kubectl scale deployment/$(DEPLOYMENT_NAME) --replicas=1 -n $(NAMESPACE)
+	@kubectl apply -f deployment/
+	@kubectl scale deployment/$(DEPLOYMENT_NAME) --replicas=2 -n $(NAMESPACE)
 
 docker-run:
 	@docker run -p 8081:8080 $(DOCKER_IMAGE)
