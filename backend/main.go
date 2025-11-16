@@ -22,16 +22,23 @@ type Rankings struct {
 var (
 	rankings = Rankings{Rankings: []Score{}}
 	mu       sync.RWMutex
-	dataFile = "rankings.json"
+	dataFile = "/app/data/rankings.json"
 )
 
 func main() {
+	// Ensure data directory exists
+	dataDir := "/app/data"
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		log.Printf("Warning: could not create data directory: %v", err)
+	}
+
 	// Load existing rankings from file
 	loadRankings()
 
 	// CORS middleware
 	http.HandleFunc("/api/scores", corsMiddleware(handleScores))
 	http.HandleFunc("/api/scores/reset", corsMiddleware(handleReset))
+	http.HandleFunc("/api/health", corsMiddleware(handleHealth))
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -42,6 +49,7 @@ func main() {
 	addr := "0.0.0.0:" + port
 
 	log.Printf("Server starting on port %s...", port)
+	log.Printf("Data file: %s", dataFile)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
@@ -125,6 +133,16 @@ func handleReset(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rankings)
 }
 
+func handleHealth(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":   "ok",
+		"dataFile": dataFile,
+		"rankings": len(rankings.Rankings),
+	})
+}
+
 func loadRankings() {
 	data, err := os.ReadFile(dataFile)
 	if err != nil {
@@ -151,6 +169,8 @@ func saveRankings() {
 	}
 
 	if err := os.WriteFile(dataFile, data, 0644); err != nil {
-		log.Printf("Error writing rankings file: %v", err)
+		log.Printf("Error writing rankings file %s: %v", dataFile, err)
+	} else {
+		log.Printf("Successfully saved %d rankings to %s", len(rankings.Rankings), dataFile)
 	}
 }
