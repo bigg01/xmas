@@ -544,12 +544,13 @@ function loadRankings() {
         .then(response => response.json())
         .then(data => {
             window.globalRankings = data.rankings || [];
+            window.scoreboardAvailable = true;
             displayRanking();
         })
         .catch(err => {
             console.error('Failed to load rankings:', err);
-            // Fallback to localStorage
-            window.globalRankings = JSON.parse(localStorage.getItem('rankings')) || [];
+            window.globalRankings = [];
+            window.scoreboardAvailable = false;
             displayRanking();
         });
 }
@@ -567,15 +568,12 @@ function saveScore(score) {
     .then(response => response.json())
     .then(data => {
         window.globalRankings = data.rankings || [];
+        window.scoreboardAvailable = true;
         displayRanking();
     })
     .catch(err => {
         console.error('Failed to save score:', err);
-        // Fallback to localStorage
-        window.globalRankings.push({ name, score, level });
-        window.globalRankings.sort((a, b) => b.score - a.score);
-        window.globalRankings = window.globalRankings.slice(0, 10);
-        localStorage.setItem('rankings', JSON.stringify(window.globalRankings));
+        window.scoreboardAvailable = false;
         displayRanking();
     });
 }
@@ -586,6 +584,16 @@ function displayRanking() {
     
     const list = document.getElementById('rankingList');
     list.innerHTML = '';
+    
+    // Check if scoreboard is unavailable
+    if (window.scoreboardAvailable === false) {
+        const li = document.createElement('li');
+        li.textContent = '⚠️ Scoreboard Unavailable';
+        li.style.opacity = '0.7';
+        li.style.color = '#ff6600';
+        list.appendChild(li);
+        return;
+    }
     
     if (!window.globalRankings || window.globalRankings.length === 0) {
         const li = document.createElement('li');
@@ -611,26 +619,16 @@ function resetRanking() {
         .then(response => response.json())
         .then(data => {
             window.globalRankings = [];
+            window.scoreboardAvailable = true;
             displayRanking();
         })
         .catch(err => {
             console.error('Failed to reset rankings:', err);
-            // Fallback to localStorage
-            window.globalRankings = [];
-            localStorage.removeItem('rankings');
+            window.scoreboardAvailable = false;
             displayRanking();
         });
     }
 }
-
-try {
-    const channel = new BroadcastChannel('rankings');
-    channel.onmessage = (e) => {
-        if (e.data.type === 'update') window.globalRankings = e.data.rankings;
-        else if (e.data.type === 'reset') window.globalRankings = [];
-        displayRanking();
-    };
-} catch (e) {}
 
 createSnowflakes();
 loadRankings();
