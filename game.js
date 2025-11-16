@@ -1,8 +1,177 @@
 const names = ["Oliver", "Vanessa", "Timo", "Luan"];
-const nameColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1"];
-const giftIcons = ["🎁", "🎄", "🎅", "❄️", "🐈", "🇨🇭", "💻", "⛄"];
-const bonuses = [10, 20, 30, 50]; // Define possible bonuses
-const marvelNames = ["Spider-Man", "Iron Man", "Captain America", "Thor", "Hulk", "Black Widow", "Hawkeye", "Doctor Strange", "Black Panther", "Scarlet Witch"];
+const nameColors = ["#00ff41", "#0ff", "#ff00ff", "#ffd700"];
+const giftIcons = ["🎁", "⚡", "💎", "🌟", "🚀", "💻", "🎮", "🔥"];
+const bonuses = [10, 20, 30, 50, 100]; // Define possible bonuses
+const hackerNames = ["Neo", "Trinity", "Morpheus", "Cypher", "Tank", "Dozer", "Mouse", "Switch", "Apoc", "Ghost"];
+
+// Stranger Things Easter Eggs
+const strangerThingsEasterEggs = [
+    { text: "ELEVEN", color: "#ff1744", glow: "#ff1744" },
+    { text: "DEMOGORGON", color: "#8b0000", glow: "#8b0000" },
+    { text: "UPSIDE DOWN", color: "#1a237e", glow: "#00bcd4" },
+    { text: "MINDFLAYER", color: "#4a148c", glow: "#ba68c8" },
+    { text: "HAWKINS", color: "#00e676", glow: "#00e676" },
+    { text: "RUN!", color: "#ff0000", glow: "#ff0000" },
+    { text: "FRIENDS DON'T LIE", color: "#ffd54f", glow: "#ffd54f" },
+    { text: "VECNA", color: "#d50000", glow: "#d50000" },
+    { text: "THE GATE", color: "#304ffe", glow: "#00e5ff" },
+    { text: "WILL?", color: "#ffab00", glow: "#ffab00" }
+];
+const strangerThingsSymbols = ["👾", "🔦", "🎄", "🚲", "📻", "🧇", "🎯", "⚡"];
+
+// Demon Slayer Easter Eggs
+const demonSlayerEasterEggs = [
+    { text: "水の呼吸", color: "#00bcd4", glow: "#00e5ff" }, // Water Breathing
+    { text: "TANJIRO", color: "#2e7d32", glow: "#4caf50" },
+    { text: "NEZUKO", color: "#ff1744", glow: "#ff5252" },
+    { text: "ZENITSU", color: "#ffd600", glow: "#ffea00" },
+    { text: "INOSUKE", color: "#1e88e5", glow: "#42a5f5" },
+    { text: "MUZAN", color: "#4a148c", glow: "#7b1fa2" },
+    { text: "全集中", color: "#ff6f00", glow: "#ff9100" }, // Total Concentration
+    { text: "鬼殺隊", color: "#d50000", glow: "#ff1744" }, // Demon Slayer Corps
+    { text: "HASHIRA", color: "#00e676", glow: "#00ff88" },
+    { text: "日の呼吸", color: "#ff3d00", glow: "#ff6e40" } // Sun Breathing
+];
+const demonSlayerSymbols = ["⚔️", "🔥", "💧", "⚡", "🌸", "🦋", "🌙", "☀️"];
+
+// Back to the Future Easter Eggs
+const backToFutureEasterEggs = [
+    { text: "88 MPH", color: "#00e5ff", glow: "#00e5ff" },
+    { text: "GREAT SCOTT!", color: "#ffd600", glow: "#ffea00" },
+    { text: "1.21 GIGAWATTS", color: "#ff6f00", glow: "#ff9100" },
+    { text: "DOC BROWN", color: "#ffffff", glow: "#00e5ff" },
+    { text: "MARTY McFLY", color: "#ff1744", glow: "#ff5252" },
+    { text: "DELOREAN", color: "#90a4ae", glow: "#b0bec5" },
+    { text: "FLUX CAPACITOR", color: "#00bcd4", glow: "#00e5ff" },
+    { text: "HEAVY!", color: "#ff5722", glow: "#ff7043" },
+    { text: "OUTATIME", color: "#ffeb3b", glow: "#fff176" },
+    { text: "1985", color: "#4caf50", glow: "#66bb6a" }
+];
+const backToFutureSymbols = ["🚗", "⚡", "⏰", "🔬", "🎸", "🛹", "📅", "💫"];
+
+// Silent Hill ash and embers effect
+function initMatrix() {
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = [];
+    
+    // Create Silent Hill style ash and ember particles
+    class AshFlake {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height - canvas.height;
+            this.size = Math.random() * 4 + 0.5;
+            this.speedY = Math.random() * 0.8 + 0.2; // Slower fall
+            this.speedX = Math.random() * 1.5 - 0.75; // More horizontal drift
+            this.opacity = Math.random() * 0.6 + 0.2;
+            this.isEmber = Math.random() < 0.15; // 15% chance of being an ember
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+            this.pulseSpeed = Math.random() * 0.05 + 0.02;
+            this.pulseOffset = Math.random() * Math.PI * 2;
+        }
+        
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            this.rotation += this.rotationSpeed;
+            
+            // Erratic drift like ash in wind
+            this.speedX += (Math.random() - 0.5) * 0.2;
+            this.speedX = Math.max(-2, Math.min(2, this.speedX));
+            
+            // Occasional updrafts
+            if (Math.random() < 0.001) {
+                this.speedY = -Math.random() * 0.5;
+            } else {
+                this.speedY = Math.max(0.1, this.speedY + 0.01);
+            }
+            
+            if (this.y > canvas.height + 10) {
+                this.y = -10;
+                this.x = Math.random() * canvas.width;
+            }
+            
+            if (this.x > canvas.width + 10) this.x = -10;
+            if (this.x < -10) this.x = canvas.width + 10;
+        }
+        
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            
+            if (this.isEmber) {
+                // Draw glowing ember
+                const pulse = Math.sin(Date.now() * this.pulseSpeed + this.pulseOffset) * 0.3 + 0.7;
+                const glowSize = this.size * 3;
+                
+                // Outer glow
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, glowSize);
+                gradient.addColorStop(0, `rgba(255, 100, 0, ${this.opacity * pulse * 0.8})`);
+                gradient.addColorStop(0.4, `rgba(255, 60, 0, ${this.opacity * pulse * 0.4})`);
+                gradient.addColorStop(1, 'rgba(255, 40, 0, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(0, 0, glowSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bright core
+                ctx.fillStyle = `rgba(255, 150, 50, ${this.opacity * pulse})`;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Draw dark ash flake
+                ctx.shadowBlur = 2;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                
+                // Irregular ash shape
+                ctx.fillStyle = `rgba(${60 + Math.random() * 40}, ${50 + Math.random() * 30}, ${45 + Math.random() * 25}, ${this.opacity})`;
+                ctx.beginPath();
+                
+                // Create irregular flake shape
+                const sides = 3 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < sides; i++) {
+                    const angle = (i / sides) * Math.PI * 2;
+                    const radius = this.size * (0.5 + Math.random() * 0.5);
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        }
+    }
+    
+    // Initialize particles (more for Silent Hill atmosphere)
+    for (let i = 0; i < 150; i++) {
+        particles.push(new AshFlake());
+    }
+    
+    function animateAsh() {
+        // Dark, foggy background fade
+        ctx.fillStyle = 'rgba(10, 14, 39, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        requestAnimationFrame(animateAsh);
+    }
+    
+    animateAsh();
+}
 
 function createSnowflake() {
     const snowflake = document.createElement('div');
@@ -10,28 +179,114 @@ function createSnowflake() {
     snowflake.style.left = Math.random() * 100 + 'vw';
     snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
 
-    // Randomly decide whether to use a name, a gift icon, or a snowflake
+    // Randomly decide what type of snowflake to create
     const randomChoice = Math.random();
-    if (randomChoice < 0.1) { // 10% chance for names
-        const nameIndex = Math.floor(Math.random() * names.length);
-        snowflake.textContent = " " + names[nameIndex];
-        snowflake.style.fontSize = '16px';
-        snowflake.style.color = nameColors[nameIndex];
-    } else if (randomChoice < 0.2) { // 10% chance for gifts
-        const giftIndex = Math.floor(Math.random() * giftIcons.length);
-        snowflake.textContent = giftIcons[giftIndex];
-        snowflake.style.fontSize = '20px';
+    if (randomChoice < 0.03) { // 3% chance for Stranger Things easter eggs!
+        const easterEgg = strangerThingsEasterEggs[Math.floor(Math.random() * strangerThingsEasterEggs.length)];
+        snowflake.textContent = easterEgg.text;
+        snowflake.style.fontSize = '14px';
+        snowflake.style.fontWeight = '900';
+        snowflake.style.fontFamily = "'Orbitron', monospace";
+        snowflake.style.color = easterEgg.color;
+        snowflake.style.textShadow = `0 0 15px ${easterEgg.glow}, 0 0 30px ${easterEgg.glow}`;
+        snowflake.style.letterSpacing = '2px';
+        snowflake.style.animation = 'fall linear infinite, textGlow 1s ease-in-out infinite';
+        
+        // Special effect for DEMOGORGON and VECNA
+        if (easterEgg.text === "DEMOGORGON" || easterEgg.text === "VECNA") {
+            snowflake.style.fontSize = '16px';
+            snowflake.style.animation = 'fall linear infinite, pulse 0.5s ease-in-out infinite';
+        }
+    } else if (randomChoice < 0.06) { // 3% chance for Demon Slayer easter eggs!
+        const easterEgg = demonSlayerEasterEggs[Math.floor(Math.random() * demonSlayerEasterEggs.length)];
+        snowflake.textContent = easterEgg.text;
+        snowflake.style.fontSize = easterEgg.text.length > 8 ? '12px' : '14px';
+        snowflake.style.fontWeight = '900';
+        snowflake.style.fontFamily = "'Orbitron', monospace";
+        snowflake.style.color = easterEgg.color;
+        snowflake.style.textShadow = `0 0 15px ${easterEgg.glow}, 0 0 30px ${easterEgg.glow}`;
+        snowflake.style.letterSpacing = '1px';
+        snowflake.style.animation = 'fall linear infinite, textGlow 1s ease-in-out infinite';
+        
+        // Special effect for breathing techniques
+        if (easterEgg.text.includes("呼吸")) {
+            snowflake.style.fontSize = '16px';
+            snowflake.style.animation = 'fall linear infinite, pulse 0.6s ease-in-out infinite';
+        }
+    } else if (randomChoice < 0.09) { // 3% chance for Back to the Future easter eggs!
+        const easterEgg = backToFutureEasterEggs[Math.floor(Math.random() * backToFutureEasterEggs.length)];
+        snowflake.textContent = easterEgg.text;
+        snowflake.style.fontSize = easterEgg.text.length > 12 ? '11px' : '14px';
+        snowflake.style.fontWeight = '900';
+        snowflake.style.fontFamily = "'Orbitron', monospace";
+        snowflake.style.color = easterEgg.color;
+        snowflake.style.textShadow = `0 0 15px ${easterEgg.glow}, 0 0 30px ${easterEgg.glow}`;
+        snowflake.style.letterSpacing = '1px';
+        snowflake.style.animation = 'fall linear infinite, textGlow 1.2s ease-in-out infinite';
+        
+        // Special effect for 88 MPH and DELOREAN
+        if (easterEgg.text === "88 MPH" || easterEgg.text === "DELOREAN") {
+            snowflake.style.fontSize = '16px';
+            snowflake.style.animation = 'fall linear infinite, pulse 0.4s ease-in-out infinite';
+        }
+    } else if (randomChoice < 0.12) { // 3% chance for Stranger Things symbols
+        const symbol = strangerThingsSymbols[Math.floor(Math.random() * strangerThingsSymbols.length)];
+        snowflake.textContent = symbol;
+        snowflake.style.fontSize = '22px';
+        snowflake.style.textShadow = '0 0 10px #ff1744, 0 0 20px #ff1744';
         snowflake.classList.add('clickable-gift');
         snowflake.addEventListener('click', () => {
             applyBonus();
+            createParticles(snowflake.offsetLeft, snowflake.offsetTop);
             snowflake.remove();
         });
-    } else { // 80% chance for snowflakes
-        snowflake.style.width = '10px';
-        snowflake.style.height = '10px';
-        snowflake.style.background = 'white';
+    } else if (randomChoice < 0.15) { // 3% chance for Demon Slayer symbols
+        const symbol = demonSlayerSymbols[Math.floor(Math.random() * demonSlayerSymbols.length)];
+        snowflake.textContent = symbol;
+        snowflake.style.fontSize = '22px';
+        snowflake.style.textShadow = '0 0 10px #00bcd4, 0 0 20px #00e5ff';
+        snowflake.classList.add('clickable-gift');
+        snowflake.addEventListener('click', () => {
+            applyBonus();
+            createParticles(snowflake.offsetLeft, snowflake.offsetTop);
+            snowflake.remove();
+        });
+    } else if (randomChoice < 0.18) { // 3% chance for Back to the Future symbols
+        const symbol = backToFutureSymbols[Math.floor(Math.random() * backToFutureSymbols.length)];
+        snowflake.textContent = symbol;
+        snowflake.style.fontSize = '22px';
+        snowflake.style.textShadow = '0 0 10px #00e5ff, 0 0 20px #00e5ff';
+        snowflake.classList.add('clickable-gift');
+        snowflake.addEventListener('click', () => {
+            applyBonus();
+            createParticles(snowflake.offsetLeft, snowflake.offsetTop);
+            snowflake.remove();
+        });
+    } else if (randomChoice < 0.22) { // 4% chance for family names
+        const nameIndex = Math.floor(Math.random() * names.length);
+        snowflake.textContent = " " + names[nameIndex];
+        snowflake.style.fontSize = '18px';
+        snowflake.style.fontWeight = 'bold';
+        snowflake.style.color = nameColors[nameIndex];
+        snowflake.style.textShadow = `0 0 10px ${nameColors[nameIndex]}`;
+    } else if (randomChoice < 0.24) { // 8% chance for power-ups
+        const giftIndex = Math.floor(Math.random() * giftIcons.length);
+        snowflake.textContent = giftIcons[giftIndex];
+        snowflake.style.fontSize = '24px';
+        snowflake.classList.add('clickable-gift');
+        snowflake.style.textShadow = '0 0 10px #ffd700';
+        snowflake.addEventListener('click', () => {
+            applyBonus();
+            createParticles(snowflake.offsetLeft, snowflake.offsetTop);
+            snowflake.remove();
+        });
+    } else { // 76% chance for digital particles
+        snowflake.style.width = '8px';
+        snowflake.style.height = '8px';
+        snowflake.style.background = Math.random() > 0.5 ? '#0ff' : '#00ff41';
         snowflake.style.borderRadius = '50%';
-        snowflake.style.opacity = 0.8;
+        snowflake.style.opacity = 0.6;
+        snowflake.style.boxShadow = `0 0 5px ${snowflake.style.background}`;
     }
 
     document.body.appendChild(snowflake);
@@ -40,16 +295,43 @@ function createSnowflake() {
     }, 5000);
 }
 
+function createParticles(x, y) {
+    for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.background = ['#0ff', '#ff00ff', '#ffd700'][Math.floor(Math.random() * 3)];
+        document.body.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 3000);
+    }
+}
+
 function applyBonus() {
     const bonus = bonuses[Math.floor(Math.random() * bonuses.length)];
     score += bonus;
-    scoreDisplay.textContent = `Score: ${score} (+${bonus})`;
+    scoreDisplay.textContent = `SCORE: ${score} [+${bonus}]`;
+    
+    // Flash effect
+    scoreDisplay.style.color = '#ffd700';
+    scoreDisplay.style.textShadow = '0 0 20px #ffd700, 0 0 40px #ffd700';
+    setTimeout(() => {
+        scoreDisplay.style.color = '#0ff';
+        scoreDisplay.style.textShadow = '0 0 10px #0ff, 0 0 20px #0ff';
+    }, 300);
 }
 
+initMatrix();
 setInterval(createSnowflake, 100);
 
 function startGame() {
-    document.querySelector('.game-container').style.display = 'block';
+    // Hide start screen
+    document.getElementById('startScreen').style.display = 'none';
+    // Show game container and instructions
+    document.getElementById('gameContainer').style.display = 'block';
+    document.getElementById('instructions').style.display = 'block';
+    // Start the game
     initGame();
 }
 
@@ -99,36 +381,140 @@ function initGame() {
         }, 20);
     }
 
+    let upsideDownMode = false;
+    
+    function toggleUpsideDown() {
+        upsideDownMode = !upsideDownMode;
+        if (upsideDownMode) {
+            // Enter Upside Down
+            gameContainer.style.filter = 'invert(1) hue-rotate(180deg) saturate(150%)';
+            gameContainer.style.transition = 'filter 1s ease';
+            gameContainer.style.background = 'linear-gradient(to bottom, #1a0033, #330033)';
+            
+            setTimeout(() => {
+                upsideDownMode = false;
+                gameContainer.style.filter = 'none';
+                gameContainer.style.background = 'linear-gradient(to bottom, #000428, #004e92)';
+            }, 5000); // Stay in Upside Down for 5 seconds
+        }
+    }
+    
     function generateObstacle() {
-        let obstaclePosition = 800;
+        let obstaclePosition = 700;
         const obstacle = document.createElement('div');
-        obstacle.classList.add('obstacle');
+        const isDemogorgon = Math.random() < 0.3; // 30% chance for Demogorgon
+        const isGate = Math.random() < 0.15; // 15% chance for Gate
+        
+        if (isGate) {
+            // Create Upside Down Gate (portal)
+            obstacle.classList.add('gate');
+            obstacle.innerHTML = '🌀';
+            obstacle.style.fontSize = '50px';
+            obstacle.style.width = '60px';
+            obstacle.style.height = '60px';
+            obstacle.style.display = 'flex';
+            obstacle.style.alignItems = 'center';
+            obstacle.style.justifyContent = 'center';
+            obstacle.style.background = 'radial-gradient(circle, #1a237e, #000)';
+            obstacle.style.border = '3px solid #00bcd4';
+            obstacle.style.borderRadius = '50%';
+            obstacle.style.boxShadow = '0 0 30px #00bcd4, 0 0 60px #1a237e, inset 0 0 30px rgba(0, 188, 212, 0.5)';
+            obstacle.style.animation = 'gateRotate 2s linear infinite, obstacleGlow 0.5s ease-in-out infinite alternate';
+            obstacle.style.bottom = '0px';
+            obstacle.style.zIndex = '5';
+        } else if (isDemogorgon) {
+            // Create Santa Obstacle
+            obstacle.classList.add('demogorgon');
+            obstacle.innerHTML = '🎅';
+            obstacle.style.fontSize = '45px';
+            obstacle.style.width = '50px';
+            obstacle.style.height = '60px';
+            obstacle.style.background = 'none';
+            obstacle.style.border = 'none';
+            obstacle.style.textShadow = '0 0 20px #ff0000, 0 0 40px #ff6b6b';
+            obstacle.style.filter = 'brightness(1.2) contrast(1.3)';
+            obstacle.style.animation = 'pulse 0.3s ease-in-out infinite';
+        } else {
+            // Regular obstacle
+            obstacle.classList.add('obstacle');
+            const heights = [40, 50, 60, 70];
+            const randomHeight = heights[Math.floor(Math.random() * heights.length)];
+            obstacle.style.height = randomHeight + 'px';
+        }
+        
         gameContainer.appendChild(obstacle);
+        obstacle.style.position = 'absolute';
         obstacle.style.left = obstaclePosition + 'px';
 
+        let speed = 10 + Math.floor(score / 50); // Increase speed as score increases
         let timerId = setInterval(function() {
-            if (obstaclePosition > 0 && obstaclePosition < 80 && parseInt(santa.style.bottom) < 40) {
-                clearInterval(timerId);
-                gameOver = true;
-                saveScore(score);
-                displayRanking();
-                alert('Game Over');
-                removeGameElements();
-                document.location.reload();
+            const santaBottom = parseInt(santa.style.bottom) || 0;
+            const obstacleHeight = parseInt(obstacle.style.height) || 60;
+            
+            // Check collision
+            if (obstaclePosition > 20 && obstaclePosition < 80) {
+                if (isGate && santaBottom < 70) {
+                    // Player went through the gate!
+                    clearInterval(timerId);
+                    obstacle.remove();
+                    toggleUpsideDown();
+                    applyBonus(); // Bonus for going through gate
+                    createParticles(obstaclePosition, gameContainer.offsetHeight - 60);
+                    return;
+                } else if (!isGate && santaBottom < obstacleHeight + 10) {
+                    // Collision with obstacle or Demogorgon
+                    clearInterval(timerId);
+                    gameOver = true;
+                    
+                    // Create explosion effect
+                    createParticles(obstaclePosition, gameContainer.offsetHeight - obstacleHeight);
+                    
+                    saveScore(score);
+                    displayRanking();
+                    
+                    const deathMessage = isDemogorgon 
+                        ? `🎅 CAUGHT BY SANTA! 🎅\n\nFinal Score: ${score}\n\nPlay again?`
+                        : `💥 GAME OVER 💥\n\nFinal Score: ${score}\n\nPlay again?`;
+                    
+                    setTimeout(() => {
+                        const playAgain = confirm(deathMessage);
+                        if (playAgain) {
+                            document.location.reload();
+                        }
+                    }, 100);
+                    return;
+                }
             }
-            obstaclePosition -= 10;
+            
+            obstaclePosition -= speed;
             obstacle.style.left = obstaclePosition + 'px';
+            
+            if (obstaclePosition < -100) {
+                clearInterval(timerId);
+                obstacle.remove();
+            }
         }, 20);
 
         if (!gameOver) {
-            setTimeout(generateObstacle, Math.random() * 4000);
+            const delay = Math.max(1500, 3500 - Math.floor(score / 20) * 100);
+            setTimeout(generateObstacle, delay);
         }
     }
 
     function updateScore() {
         if (!gameOver) {
             score++;
-            scoreDisplay.textContent = `Score: ${score}`;
+            scoreDisplay.textContent = `SCORE: ${score}`;
+            
+            // Milestone celebrations
+            if (score % 100 === 0 && score > 0) {
+                scoreDisplay.style.color = '#ffd700';
+                scoreDisplay.style.textShadow = '0 0 30px #ffd700, 0 0 60px #ffd700';
+                setTimeout(() => {
+                    scoreDisplay.style.color = '#0ff';
+                    scoreDisplay.style.textShadow = '0 0 10px #0ff, 0 0 20px #0ff';
+                }, 500);
+            }
         }
     }
 
@@ -159,23 +545,65 @@ function initGame() {
         gameContainer.appendChild(gift);
     }
 
+    // In-memory cache shared across the application runtime
+    window.globalRankings = window.globalRankings || JSON.parse(localStorage.getItem('rankings')) || [];
+
     function saveScore(score) {
-        const playerName = marvelNames[Math.floor(Math.random() * marvelNames.length)];
-        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
-        rankings.push({ name: playerName, score: score });
-        rankings.sort((a, b) => b.score - a.score);
-        rankings = rankings.slice(0, 10); // Keep only the top 10 scores
-        localStorage.setItem('rankings', JSON.stringify(rankings));
+        const playerName = hackerNames[Math.floor(Math.random() * hackerNames.length)];
+        // Add to in-memory cache
+        window.globalRankings.push({ name: playerName, score: score });
+        window.globalRankings.sort((a, b) => b.score - a.score);
+        window.globalRankings = window.globalRankings.slice(0, 10); // Keep only the top 10 scores
+        
+        // Also persist to localStorage as backup
+        localStorage.setItem('rankings', JSON.stringify(window.globalRankings));
+        
+        // Broadcast to other tabs/windows
+        if (window.BroadcastChannel) {
+            const channel = new BroadcastChannel('rankings_channel');
+            channel.postMessage({ type: 'update', rankings: window.globalRankings });
+        }
     }
 
     function displayRanking() {
-        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
-        rankingList.innerHTML = rankings.map((entry, index) => `<li>${index + 1}. ${entry.name}: ${entry.score}</li>`).join('');
+        // Use in-memory cache with hacker-style formatting
+        if (window.globalRankings.length === 0) {
+            rankingList.innerHTML = '<li style="text-align:center; opacity:0.5;">[ NO DATA ]</li>';
+        } else {
+            rankingList.innerHTML = window.globalRankings.map((entry, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '▸';
+                const color = index < 3 ? 'style="color: #ffd700; font-weight: bold;"' : '';
+                return `<li ${color}>${medal} ${entry.name} ............ ${entry.score} pts</li>`;
+            }).join('');
+        }
     }
 
     window.resetRanking = function() {
+        window.globalRankings = [];
         localStorage.removeItem('rankings');
         displayRanking();
+        
+        // Broadcast reset to other tabs
+        if (window.BroadcastChannel) {
+            const channel = new BroadcastChannel('rankings_channel');
+            channel.postMessage({ type: 'reset' });
+        }
+    }
+
+    // Listen for updates from other tabs
+    if (window.BroadcastChannel) {
+        const channel = new BroadcastChannel('rankings_channel');
+        channel.onmessage = (event) => {
+            if (event.data.type === 'update') {
+                window.globalRankings = event.data.rankings;
+                localStorage.setItem('rankings', JSON.stringify(window.globalRankings));
+                displayRanking();
+            } else if (event.data.type === 'reset') {
+                window.globalRankings = [];
+                localStorage.removeItem('rankings');
+                displayRanking();
+            }
+        };
     }
 
     function removeGameElements() {
@@ -191,4 +619,20 @@ function initGame() {
     displayRanking(); // Initial call to display ranking immediately
 }
 
-startGame();
+// Don't auto-start, wait for button click
+// Display initial ranking on load
+window.addEventListener('DOMContentLoaded', () => {
+    const rankingList = document.getElementById('rankingList');
+    if (rankingList) {
+        window.globalRankings = window.globalRankings || JSON.parse(localStorage.getItem('rankings')) || [];
+        if (window.globalRankings.length === 0) {
+            rankingList.innerHTML = '<li style="text-align:center; opacity:0.5;">[ NO DATA ]</li>';
+        } else {
+            rankingList.innerHTML = window.globalRankings.map((entry, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '▸';
+                const color = index < 3 ? 'style="color: #ffd700; font-weight: bold;"' : '';
+                return `<li ${color}>${medal} ${entry.name} ............ ${entry.score} pts</li>`;
+            }).join('');
+        }
+    }
+});
