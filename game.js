@@ -65,58 +65,78 @@ function initAudio() {
 
 function playSound(type) {
     const audioContext = initAudio();
+    
+    switch(type) {
+        case 'shoot':
+            // Jingle bell shoot sound
+            playNote(audioContext, 1046.5, 0.05, 0.3); // High C
+            setTimeout(() => playNote(audioContext, 1318.5, 0.05, 0.25), 50); // High E
+            break;
+        case 'hit':
+            // Jingle bell hit - festive chime
+            playNote(audioContext, 1568, 0.1, 0.4); // High G
+            setTimeout(() => playNote(audioContext, 1318.5, 0.1, 0.3), 60);
+            setTimeout(() => playNote(audioContext, 1046.5, 0.15, 0.2), 120);
+            break;
+        case 'death':
+            // Sad descending Christmas bells
+            playNote(audioContext, 523.25, 0.2, 0.4); // C
+            setTimeout(() => playNote(audioContext, 466.16, 0.2, 0.35), 150);
+            setTimeout(() => playNote(audioContext, 392, 0.3, 0.3), 300);
+            break;
+        case 'alienShoot':
+            // Darker jingle
+            playNote(audioContext, 349.23, 0.08, 0.25); // F
+            setTimeout(() => playNote(audioContext, 293.66, 0.08, 0.2), 60);
+            break;
+        case 'win':
+            // Jingle Bells melody snippet
+            playNote(audioContext, 659.25, 0.15, 0.3); // E
+            setTimeout(() => playNote(audioContext, 659.25, 0.15, 0.3), 150);
+            setTimeout(() => playNote(audioContext, 659.25, 0.3, 0.3), 300);
+            setTimeout(() => playNote(audioContext, 659.25, 0.15, 0.3), 600);
+            setTimeout(() => playNote(audioContext, 659.25, 0.15, 0.3), 750);
+            setTimeout(() => playNote(audioContext, 659.25, 0.3, 0.3), 900);
+            setTimeout(() => playNote(audioContext, 659.25, 0.15, 0.3), 1200);
+            setTimeout(() => playNote(audioContext, 783.99, 0.15, 0.3), 1350); // G
+            setTimeout(() => playNote(audioContext, 523.25, 0.2, 0.3), 1500); // C
+            setTimeout(() => playNote(audioContext, 587.33, 0.15, 0.3), 1700); // D
+            setTimeout(() => playNote(audioContext, 659.25, 0.4, 0.3), 1850); // E
+            break;
+    }
+}
+
+function playNote(audioContext, frequency, duration, volume) {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
+    
+    // Bell-like sound using sine wave with harmonics
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    
+    gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
     
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
     
-    switch(type) {
-        case 'shoot':
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.1);
-            break;
-        case 'hit':
-            oscillator.type = 'square';
-            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.2);
-            gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.2);
-            break;
-        case 'death':
-            oscillator.type = 'sawtooth';
-            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.5);
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
-            break;
-        case 'alienShoot':
-            oscillator.type = 'triangle';
-            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.15);
-            gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.15);
-            break;
-        case 'win':
-            oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.1);
-            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.2);
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.3);
-            break;
-    }
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration);
+    
+    // Add harmonic overtone for bell effect
+    const harmonic = audioContext.createOscillator();
+    const harmonicGain = audioContext.createGain();
+    
+    harmonic.type = 'sine';
+    harmonic.frequency.setValueAtTime(frequency * 2, audioContext.currentTime);
+    harmonicGain.gain.setValueAtTime(volume * 0.3, audioContext.currentTime);
+    harmonicGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration * 0.8);
+    
+    harmonic.connect(harmonicGain);
+    harmonicGain.connect(audioContext.destination);
+    
+    harmonic.start(audioContext.currentTime);
+    harmonic.stop(audioContext.currentTime + duration * 0.8);
 }
 
 let playerName = '';
@@ -481,4 +501,4 @@ try {
 
 createSnowflakes();
 displayRanking();
-document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, <a href="https://www.containerize.ch">https://www.containerize.ch</a> ';
+document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, https://www.containerize.ch';
