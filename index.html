@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Happy X-mas">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>🎮 CYBER X-MAS 2025 🎮</title>
@@ -25,7 +25,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #0a0e27 100%);
+            background: linear-gradient(135deg, #000000 0%, #0a0a1a 50%, #000000 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             overflow-x: hidden;
@@ -51,11 +51,11 @@
         
         .game-container {
             position: relative;
-            width: 600px;
-            height: 400px;
+            width: min(600px, 95vw);
+            height: min(400px, 60vh);
             border: 3px solid #00ff41;
             overflow: hidden;
-            background: linear-gradient(to bottom, #000428, #004e92);
+            background: linear-gradient(to bottom, #000000, #001a33);
             border-radius: 15px;
             box-shadow: 0 0 30px #00ff41, 0 0 60px rgba(0, 255, 65, 0.5), inset 0 0 30px rgba(0, 255, 65, 0.1);
             z-index: 1;
@@ -64,10 +64,10 @@
         
         .start-screen {
             position: relative;
-            width: 600px;
-            height: 400px;
+            width: min(600px, 95vw);
+            height: min(400px, 60vh);
             border: 3px solid #00ff41;
-            background: linear-gradient(to bottom, #000428, #004e92);
+            background: linear-gradient(to bottom, #000000, #001a33);
             border-radius: 15px;
             box-shadow: 0 0 30px #00ff41, 0 0 60px rgba(0, 255, 65, 0.5), inset 0 0 30px rgba(0, 255, 65, 0.1);
             display: flex;
@@ -349,6 +349,93 @@
             position: absolute;
             bottom: 0;
         }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .message {
+                font-size: 24px;
+                padding: 8px 15px;
+                margin-bottom: 10px;
+            }
+            
+            .message span {
+                font-size: 14px;
+            }
+            
+            .countdown {
+                font-size: 18px;
+                margin-top: 10px;
+            }
+            
+            .start-title {
+                font-size: 36px;
+            }
+            
+            .start-subtitle {
+                font-size: 14px;
+                padding: 0 10px;
+            }
+            
+            .start-button {
+                padding: 15px 35px;
+                font-size: 20px;
+            }
+            
+            .score {
+                font-size: 16px;
+                top: 5px;
+                left: 5px;
+            }
+            
+            .instructions {
+                font-size: 12px;
+                margin-top: 10px;
+            }
+            
+            .ranking {
+                margin-top: 15px;
+                font-size: 12px;
+                padding: 10px;
+            }
+            
+            .ranking h3 {
+                font-size: 18px;
+            }
+            
+            .reset-button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            /* Reduce visual effects on mobile for performance */
+            .game-container,
+            .start-screen {
+                box-shadow: 0 0 15px #00ff41, 0 0 30px rgba(0, 255, 65, 0.3);
+            }
+            
+            .matrix-bg {
+                opacity: 0.08;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .message {
+                font-size: 20px;
+            }
+            
+            .start-title {
+                font-size: 28px;
+            }
+            
+            .ranking {
+                font-size: 11px;
+            }
+        }
     </style>
 
 </head>
@@ -361,13 +448,13 @@
     </div>
     <div class="countdown" id="countdown"></div>
  
-    <div class="start-screen" id="startScreen">
+    <div class="start-screen" id="startScreen" style="display: flex;">
         <div class="start-title">CYBER<br/>X-MAS<br/>2025</div>
         <div class="start-subtitle">⚡ Jump over Santa & collect bonuses ⚡<br/>🌀 Enter the Upside Down 🌀</div>
         <button class="start-button" onclick="startGame()">▶ START GAME</button>
     </div>
  
-    <div class="game-container" id="gameContainer">
+    <div class="game-container" id="gameContainer" style="display: none;">
         <div class="score" id="score">SCORE: 0</div>
         <div class="santa" id="santa"></div>
     </div>
@@ -378,8 +465,8 @@
         <button class="reset-button" onclick="resetRanking()">⟲ RESET BOARD</button>
     </div>
     <div class="version">
-        <span id="version">v2.0-CYBER </span>
+        <span id="version">Version: </span>
     </div>
-    <script src="game.js"></script>
+    <script src="game.js?v=20251116-4"></script>
 </body>
 </html>

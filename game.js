@@ -4,6 +4,70 @@ const giftIcons = ["🎁", "⚡", "💎", "🌟", "🚀", "💻", "🎮", "🔥"
 const bonuses = [10, 20, 30, 50, 100]; // Define possible bonuses
 const hackerNames = ["Neo", "Trinity", "Morpheus", "Cypher", "Tank", "Dozer", "Mouse", "Switch", "Apoc", "Ghost"];
 
+// Global Audio Context for sound effects
+let globalAudioContext = null;
+
+function initAudio() {
+    if (!globalAudioContext) {
+        globalAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return globalAudioContext;
+}
+
+function playSound(type) {
+    const audioContext = initAudio();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    switch(type) {
+        case 'jump':
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+            break;
+        case 'bonus':
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.05);
+            oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.15);
+            break;
+        case 'collision':
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.3);
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+            break;
+        case 'portal':
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+            gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+            break;
+        case 'score':
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.05);
+            break;
+    }
+}
+
 // Stranger Things Easter Eggs
 const strangerThingsEasterEggs = [
     { text: "ELEVEN", color: "#ff1744", glow: "#ff1744" },
@@ -126,12 +190,12 @@ function initMatrix() {
                 ctx.arc(0, 0, this.size, 0, Math.PI * 2);
                 ctx.fill();
             } else {
-                // Draw dark ash flake
-                ctx.shadowBlur = 2;
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                // Draw lighter ash flake
+                ctx.shadowBlur = 3;
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.2)';
                 
-                // Irregular ash shape
-                ctx.fillStyle = `rgba(${60 + Math.random() * 40}, ${50 + Math.random() * 30}, ${45 + Math.random() * 25}, ${this.opacity})`;
+                // Irregular ash shape - much lighter colors
+                ctx.fillStyle = `rgba(${180 + Math.random() * 60}, ${170 + Math.random() * 60}, ${160 + Math.random() * 60}, ${this.opacity})`;
                 ctx.beginPath();
                 
                 // Create irregular flake shape
@@ -152,14 +216,15 @@ function initMatrix() {
         }
     }
     
-    // Initialize particles (more for Silent Hill atmosphere)
-    for (let i = 0; i < 150; i++) {
+    // Initialize particles (optimized for mobile/low-end devices)
+    const particleCount = window.innerWidth < 768 ? 50 : 100; // Fewer particles on mobile
+    for (let i = 0; i < particleCount; i++) {
         particles.push(new AshFlake());
     }
     
     function animateAsh() {
-        // Dark, foggy background fade
-        ctx.fillStyle = 'rgba(10, 14, 39, 0.1)';
+        // Very dark background fade
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         particles.forEach(particle => {
@@ -296,7 +361,9 @@ function createSnowflake() {
 }
 
 function createParticles(x, y) {
-    for (let i = 0; i < 15; i++) {
+    // Reduce particles on mobile for performance
+    const particleCount = window.innerWidth < 768 ? 8 : 15;
+    for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.classList.add('particle');
         particle.style.left = x + 'px';
@@ -313,6 +380,8 @@ function applyBonus() {
     score += bonus;
     scoreDisplay.textContent = `SCORE: ${score} [+${bonus}]`;
     
+    playSound('bonus'); // Play bonus sound
+    
     // Flash effect
     scoreDisplay.style.color = '#ffd700';
     scoreDisplay.style.textShadow = '0 0 20px #ffd700, 0 0 40px #ffd700';
@@ -323,7 +392,9 @@ function applyBonus() {
 }
 
 initMatrix();
-setInterval(createSnowflake, 100);
+// Reduce snowflake frequency on mobile devices
+const snowflakeInterval = window.innerWidth < 768 ? 200 : 100;
+setInterval(createSnowflake, snowflakeInterval);
 
 function startGame() {
     // Hide start screen
@@ -345,6 +416,9 @@ function initGame() {
     let gravity = 0.9;
     let score = 0;
     let gameOver = false;
+    
+    // Initialize audio context
+    initAudio();
 
     document.addEventListener('keydown', function(event) {
         if (event.code === 'Space' && !gameOver) {
@@ -361,6 +435,7 @@ function initGame() {
     function jump() {
         if (isJumping) return;
         isJumping = true;
+        playSound('jump'); // Play jump sound
         let position = 0;
         let timerId = setInterval(function() {
             if (position >= 150) {
@@ -457,6 +532,7 @@ function initGame() {
                     // Player went through the gate!
                     clearInterval(timerId);
                     obstacle.remove();
+                    playSound('portal'); // Play portal sound
                     toggleUpsideDown();
                     applyBonus(); // Bonus for going through gate
                     createParticles(obstaclePosition, gameContainer.offsetHeight - 60);
@@ -465,6 +541,8 @@ function initGame() {
                     // Collision with obstacle or Demogorgon
                     clearInterval(timerId);
                     gameOver = true;
+                    
+                    playSound('collision'); // Play collision sound
                     
                     // Create explosion effect
                     createParticles(obstaclePosition, gameContainer.offsetHeight - obstacleHeight);
@@ -506,10 +584,16 @@ function initGame() {
             score++;
             scoreDisplay.textContent = `SCORE: ${score}`;
             
+            // Play subtle score sound every 10 points
+            if (score % 10 === 0) {
+                playSound('score');
+            }
+            
             // Milestone celebrations
             if (score % 100 === 0 && score > 0) {
                 scoreDisplay.style.color = '#ffd700';
                 scoreDisplay.style.textShadow = '0 0 30px #ffd700, 0 0 60px #ffd700';
+                playSound('bonus'); // Play bonus sound for milestone
                 setTimeout(() => {
                     scoreDisplay.style.color = '#0ff';
                     scoreDisplay.style.textShadow = '0 0 10px #0ff, 0 0 20px #0ff';
@@ -622,6 +706,22 @@ function initGame() {
 // Don't auto-start, wait for button click
 // Display initial ranking on load
 window.addEventListener('DOMContentLoaded', () => {
+    // Ensure correct initial display state
+    const startScreen = document.getElementById('startScreen');
+    const gameContainer = document.getElementById('gameContainer');
+    const instructions = document.getElementById('instructions');
+    
+    if (startScreen) {
+        startScreen.style.display = 'flex';
+    }
+    if (gameContainer) {
+        gameContainer.style.display = 'none';
+    }
+    if (instructions) {
+        instructions.style.display = 'none';
+    }
+    
+    // Display initial ranking
     const rankingList = document.getElementById('rankingList');
     if (rankingList) {
         window.globalRankings = window.globalRankings || JSON.parse(localStorage.getItem('rankings')) || [];
