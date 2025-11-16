@@ -535,7 +535,8 @@ window.globalRankings = window.globalRankings || JSON.parse(localStorage.getItem
 
 function saveScore(score) {
     const name = playerName || spaceHeroes[Math.floor(Math.random() * spaceHeroes.length)];
-    window.globalRankings.push({ name: name, score: score });
+    const level = currentLevel || 1;
+    window.globalRankings.push({ name: name, score: score, level: level });
     window.globalRankings.sort((a, b) => b.score - a.score);
     window.globalRankings = window.globalRankings.slice(0, 10);
     localStorage.setItem('rankings', JSON.stringify(window.globalRankings));
@@ -553,7 +554,8 @@ function displayRanking() {
     list.innerHTML = '';
     window.globalRankings.forEach((entry, i) => {
         const li = document.createElement('li');
-        li.textContent = `${i + 1}. ${entry.name}: ${entry.score}`;
+        const levelInfo = entry.level ? ` [L${entry.level}]` : '';
+        li.textContent = `${i + 1}. ${entry.name}: ${entry.score}${levelInfo}`;
         list.appendChild(li);
     });
 }
