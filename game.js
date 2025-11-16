@@ -172,7 +172,7 @@ function startGame() {
             countdown.textContent = 'GO!';
             setTimeout(() => {
                 countdown.style.display = 'none';
-                initGame();
+                initGame(true);
             }, 500);
             clearInterval(countdownInterval);
         }
@@ -182,15 +182,24 @@ function startGame() {
 let player, aliens = [], playerLasers = [], alienLasers = [];
 let score = 0, gameOver = false, alienDirection = 1, alienSpeed = 1;
 let gameLoop, shootCooldown = false;
+let currentLevel = 1;
 
-function initGame() {
+function initGame(newLevel = false) {
     const gameContainer = document.getElementById('gameContainer');
     const scoreDisplay = document.getElementById('score');
     
     gameContainer.innerHTML = '';
-    scoreDisplay.textContent = 'SCORE: 0';
     
-    score = 0;
+    if (newLevel) {
+        // Starting new game
+        score = 0;
+        currentLevel = 1;
+        scoreDisplay.textContent = 'SCORE: 0 | LEVEL: 1';
+    } else {
+        // Continuing to next level
+        scoreDisplay.textContent = `SCORE: ${score} | LEVEL: ${currentLevel}`;
+    }
+    
     gameOver = false;
     aliens = [];
     playerLasers = [];
@@ -204,19 +213,38 @@ function initGame() {
         element: null
     };
     
-    // Responsive alien grid - adjust spacing based on container width
-    const rows = 4, cols = 8;
+    // Calculate number of aliens based on level: 2, 4, 8, 16, 30 max
+    let alienCount = Math.min(Math.pow(2, currentLevel), 30);
+    
+    // Responsive alien grid - adjust based on alien count
     const containerWidth = gameContainer.offsetWidth;
     const isMobile = window.innerWidth <= 768;
     const alienWidth = isMobile ? 30 : 40;
     const alienHeight = isMobile ? 30 : 40;
+    
+    // Determine grid layout based on alien count
+    let cols, rows;
+    if (alienCount <= 2) {
+        cols = 2; rows = 1;
+    } else if (alienCount <= 4) {
+        cols = 4; rows = 1;
+    } else if (alienCount <= 8) {
+        cols = 4; rows = 2;
+    } else if (alienCount <= 16) {
+        cols = 8; rows = 2;
+    } else {
+        cols = 10; rows = 3;
+    }
+    
     const spacing = Math.min(60, (containerWidth - 40) / cols); // Adaptive spacing
     const totalWidth = cols * spacing;
     const startX = (containerWidth - totalWidth) / 2 + spacing / 2 - alienWidth / 2;
     const startY = 40;
     
-    for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
+    // Create aliens up to alienCount
+    let created = 0;
+    for (let row = 0; row < rows && created < alienCount; row++) {
+        for (let col = 0; col < cols && created < alienCount; col++) {
             aliens.push({
                 x: startX + col * spacing,
                 y: startY + row * spacing,
@@ -224,6 +252,7 @@ function initGame() {
                 height: alienHeight,
                 element: createAlien()
             });
+            created++;
         }
     }
     
@@ -404,7 +433,7 @@ function checkCollisions() {
                 aliens[j].element.remove();
                 aliens.splice(j, 1);
                 score += 10;
-                document.getElementById('score').textContent = 'SCORE: ' + score;
+                document.getElementById('score').textContent = `SCORE: ${score} | LEVEL: ${currentLevel}`;
                 playSound('hit');
                 break;
             }
@@ -441,14 +470,48 @@ function winGame() {
     clearInterval(gameLoop);
     playSound('win');
     score += 100;
-    document.getElementById('score').textContent = 'SCORE: ' + score;
-    saveScore(score);
-    displayRanking();
-    setTimeout(() => {
-        if (confirm(`🏆 YOU WIN! 🏆\n\nFinal Score: ${score}\n\nPlay again?`)) {
-            document.location.reload();
-        }
-    }, 500);
+    currentLevel++;
+    
+    const maxAliens = Math.min(Math.pow(2, currentLevel), 30);
+    
+    // Check if we've completed all levels (level where we'd have 30+ aliens)
+    if (maxAliens >= 30 && currentLevel > 5) {
+        // Beat the game!
+        document.getElementById('score').textContent = `SCORE: ${score} | LEVEL: ${currentLevel - 1} COMPLETE!`;
+        saveScore(score);
+        displayRanking();
+        setTimeout(() => {
+            if (confirm(`� YOU BEAT ALL LEVELS! �\n\nFinal Score: ${score}\n\nPlay again?`)) {
+                document.location.reload();
+            }
+        }, 500);
+    } else {
+        // Progress to next level
+        document.getElementById('score').textContent = `SCORE: ${score} | LEVEL: ${currentLevel}`;
+        
+        const countdown = document.getElementById('countdown');
+        countdown.style.display = 'block';
+        countdown.textContent = `LEVEL ${currentLevel}`;
+        
+        setTimeout(() => {
+            let count = 3;
+            countdown.textContent = count;
+            
+            const countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdown.textContent = count;
+                } else {
+                    countdown.textContent = 'GO!';
+                    setTimeout(() => {
+                        countdown.style.display = 'none';
+                        initGame(false);
+                    }, 500);
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }, 1500);
+    }
 }
 
 window.globalRankings = window.globalRankings || JSON.parse(localStorage.getItem('rankings')) || [];
@@ -501,4 +564,4 @@ try {
 
 createSnowflakes();
 displayRanking();
-document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, https://www.containerize.ch';
+document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, AI generated, https://www.containerize.ch';
