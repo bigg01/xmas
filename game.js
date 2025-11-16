@@ -186,9 +186,25 @@ let currentLevel = 1;
 
 function initGame(newLevel = false) {
     const gameContainer = document.getElementById('gameContainer');
-    const scoreDisplay = document.getElementById('score');
+    let scoreDisplay = document.getElementById('score');
     
-    gameContainer.innerHTML = '';
+    // Save score element before clearing
+    const scoreParent = scoreDisplay ? scoreDisplay.parentNode : null;
+    const scoreHTML = scoreDisplay ? scoreDisplay.outerHTML : '<div class="score" id="score">SCORE: 0</div>';
+    
+    // Clear game area but keep score
+    const children = Array.from(gameContainer.children);
+    children.forEach(child => {
+        if (child.id !== 'score') {
+            child.remove();
+        }
+    });
+    
+    // Make sure score element exists
+    if (!document.getElementById('score')) {
+        gameContainer.insertAdjacentHTML('afterbegin', scoreHTML);
+    }
+    scoreDisplay = document.getElementById('score');
     
     if (newLevel) {
         // Starting new game
