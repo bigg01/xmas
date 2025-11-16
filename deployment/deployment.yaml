@@ -4,7 +4,7 @@ metadata:
   name: santa-claus-game
   namespace: santa
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: santa-claus-game
