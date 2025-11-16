@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="Happy X-mas">
+    <meta name="description" content="XMAS Space Invaders Arcade Game">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>🎮 CYBER X-MAS 2025 🎮</title>
+    <title>👾 SPACE INVADERS 2025 👾</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
@@ -25,11 +25,13 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #000000 0%, #0a0a1a 50%, #000000 100%);
+            background: linear-gradient(135deg, #000000 0%, #0a0a2e 50%, #16213e 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
+            touch-action: manipulation;
         }
         
         @keyframes gradientShift {
@@ -52,24 +54,28 @@
         .game-container {
             position: relative;
             width: min(600px, 95vw);
-            height: min(400px, 60vh);
-            border: 3px solid #00ff41;
+            height: min(400px, 70vh);
+            max-height: 90vh;
+            border: 5px solid #00ff00;
             overflow: hidden;
-            background: linear-gradient(to bottom, #000000, #001a33);
-            border-radius: 15px;
-            box-shadow: 0 0 30px #00ff41, 0 0 60px rgba(0, 255, 65, 0.5), inset 0 0 30px rgba(0, 255, 65, 0.1);
+            background: linear-gradient(to bottom, #0a0a2e, #16213e);
+            border-radius: 10px;
+            box-shadow: 0 0 30px #00ff00, 0 0 60px rgba(0, 255, 0, 0.5), inset 0 0 30px rgba(0, 255, 0, 0.1);
             z-index: 1;
             display: none;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .start-screen {
             position: relative;
             width: min(600px, 95vw);
             height: min(400px, 60vh);
-            border: 3px solid #00ff41;
-            background: linear-gradient(to bottom, #000000, #001a33);
-            border-radius: 15px;
-            box-shadow: 0 0 30px #00ff41, 0 0 60px rgba(0, 255, 65, 0.5), inset 0 0 30px rgba(0, 255, 65, 0.1);
+            border: 5px solid #00ff00;
+            background: linear-gradient(to bottom, #0a0a2e, #16213e);
+            border-radius: 10px;
+            box-shadow: 0 0 30px #00ff00, 0 0 60px rgba(0, 255, 0, 0.5), inset 0 0 30px rgba(0, 255, 0, 0.1);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -81,16 +87,16 @@
         .start-title {
             font-size: 48px;
             font-weight: 900;
-            color: #00ff41;
-            text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00, 0 0 40px #00ffff;
             animation: textGlow 2s ease-in-out infinite;
             text-align: center;
         }
         
         .start-subtitle {
             font-size: 18px;
-            color: #0ff;
-            text-shadow: 0 0 10px #0ff;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
             text-align: center;
         }
         
@@ -99,21 +105,21 @@
             font-size: 24px;
             font-family: 'Orbitron', monospace;
             font-weight: 700;
-            background: linear-gradient(135deg, #00ff41, #00bcd4);
+            background: linear-gradient(135deg, #00ff00, #00ffff);
             color: #000;
-            border: 3px solid #00ff41;
+            border: 3px solid #00ff00;
             border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 0 20px #00ff41, 0 0 40px rgba(0, 255, 65, 0.5);
+            box-shadow: 0 0 20px #00ff00, 0 0 40px rgba(0, 255, 0, 0.5);
             transition: all 0.3s ease;
-            text-shadow: none;
+            text-shadow: 0 0 5px #00ff00;
             animation: pulse 2s ease-in-out infinite;
         }
         
         .start-button:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41;
-            background: linear-gradient(135deg, #00bcd4, #00ff41);
+            box-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00;
+            background: linear-gradient(135deg, #00ffff, #00ff00);
         }
         
         .start-button:active {
@@ -124,10 +130,10 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            color: #0ff;
+            color: #00ff00;
             font-size: 20px;
             font-weight: 700;
-            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ffff;
             z-index: 10;
         }
         
@@ -136,9 +142,9 @@
             bottom: 4px;
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            background: linear-gradient(135deg, #ff0000, #ff6600);
             border-radius: 50%;
-            box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+            box-shadow: 0 0 20px #ff0000, 0 0 40px #ff6600;
             animation: pulse 1s ease-in-out infinite;
         }
         
@@ -152,23 +158,23 @@
             bottom: 0;
             width: 30px;
             height: 50px;
-            background: linear-gradient(180deg, #ff0080, #ff00ff);
-            border: 2px solid #ff00ff;
-            box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff0080;
+            background: linear-gradient(180deg, #00ff00, #00ffff);
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 15px #00ff00, 0 0 30px #00ffff;
             animation: obstacleGlow 0.5s ease-in-out infinite alternate;
         }
         
         @keyframes obstacleGlow {
-            from { box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff0080; }
-            to { box-shadow: 0 0 25px #ff00ff, 0 0 50px #ff0080; }
+            from { box-shadow: 0 0 15px #00ff00, 0 0 30px #00ffff; }
+            to { box-shadow: 0 0 25px #00ff00, 0 0 50px #00ffff; }
         }
         
         .gift {
             width: 180px;
             height: 180px;
-            background: linear-gradient(135deg, #ffd700, #ffff00);
+            background: linear-gradient(135deg, #00ffff, #0099ff);
             border-radius: 15px;
-            box-shadow: 0 0 30px #ffd700;
+            box-shadow: 0 0 30px #00ffff, 0 0 50px #0099ff;
             animation: giftSpin 2s linear infinite;
         }
         
@@ -178,20 +184,18 @@
         }
         
         .snowflake {
-            position: absolute;
-            top: -10px;
-            width: 10px;
-            height: 10px;
-            background: #0ff;
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: fall linear infinite;
-            box-shadow: 0 0 5px #0ff;
+            position: fixed;
+            top: -50px;
+            z-index: 9999;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
         }
         
         @keyframes fall {
             to {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
             }
         }
         
@@ -199,49 +203,57 @@
             margin-bottom: 20px;
             font-size: 36px;
             font-weight: 900;
-            color: #00ff41;
+            color: #ffff00;
             text-align: center;
             background: rgba(0, 0, 0, 0.8);
             padding: 15px 30px;
             border-radius: 15px;
-            border: 2px solid #00ff41;
-            box-shadow: 0 0 20px #00ff41, 0 0 40px rgba(0, 255, 65, 0.5);
-            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 20px #ff00ff, 0 0 40px rgba(255, 0, 255, 0.5);
+            text-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff;
             animation: textGlow 2s ease-in-out infinite;
             z-index: 1;
         }
         
         @keyframes textGlow {
-            0%, 100% { text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41; }
-            50% { text-shadow: 0 0 20px #00ff41, 0 0 40px #00ff41, 0 0 60px #00ff41; }
+            0%, 100% { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ffff; }
+            50% { text-shadow: 0 0 20px #00ff00, 0 0 40px #00ffff, 0 0 60px #00ff00; }
         }
         
         .message span {
             display: block;
             font-size: 20px;
             margin-top: 10px;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ff00;
         }
         
         .countdown {
             margin-top: 20px;
             font-size: 28px;
             font-weight: 700;
-            color: #0ff;
+            color: #00ff00;
             text-align: center;
-            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ffff;
             z-index: 1;
         }
         
         .instructions {
             margin-top: 15px;
             font-size: 16px;
-            color: #ff00ff;
+            color: #00ffff;
             text-align: center;
-            text-shadow: 0 0 5px #ff00ff;
+            text-shadow: 0 0 5px #00ffff;
             animation: blink 1.5s ease-in-out infinite;
             z-index: 1;
+        }
+        
+        .mobile-only {
+            display: none;
+        }
+        
+        .desktop-only {
+            display: inline;
         }
         
         @keyframes blink {
@@ -252,21 +264,21 @@
         .ranking {
             margin-top: 20px;
             font-size: 14px;
-            color: #0ff;
+            color: #00ff00;
             text-align: center;
             background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 10px;
-            border: 2px solid #0ff;
-            box-shadow: 0 0 15px #0ff;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 15px #00ff00;
             z-index: 1;
         }
         
         .ranking h3 {
-            color: #00ff41;
+            color: #00ff00;
             font-size: 24px;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px #00ff41;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ffff;
         }
         
         .ranking ul {
@@ -277,9 +289,9 @@
         .ranking li {
             padding: 5px;
             margin: 5px 0;
-            background: rgba(0, 255, 255, 0.1);
-            border-left: 3px solid #0ff;
-            text-shadow: 0 0 5px #0ff;
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 3px solid #00ff00;
+            text-shadow: 0 0 5px #00ff00;
         }
         
         .reset-button {
@@ -288,27 +300,30 @@
             font-size: 16px;
             font-family: 'Orbitron', monospace;
             font-weight: 700;
-            background: linear-gradient(135deg, #ff0080, #ff00ff);
-            color: #fff;
-            border: 2px solid #ff00ff;
+            background: linear-gradient(135deg, #00ff00, #00ffff);
+            color: #000;
+            border: 2px solid #00ff00;
             border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 0 15px #ff00ff;
+            box-shadow: 0 0 15px #00ff00, 0 0 25px #00ffff;
             transition: all 0.3s ease;
-            text-shadow: 0 0 5px #000;
+            text-shadow: 0 0 5px #00ff00;
         }
         
         .reset-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 25px #ff00ff, 0 0 50px #ff0080;
+            box-shadow: 0 0 30px #00ff00, 0 0 60px #00ffff;
+            background: linear-gradient(135deg, #00ffff, #00ff00);
+            color: #000;
         }
         
         .version {
             margin-top: 20px;
             font-size: 12px;
-            color: #888;
+            color: #00ffff;
             text-align: center;
             z-index: 1;
+            text-shadow: 0 0 5px #00ffff;
         }
         
         /* Particle effects */
@@ -316,7 +331,7 @@
             position: absolute;
             width: 3px;
             height: 3px;
-            background: #0ff;
+            background: #00ff00;
             border-radius: 50%;
             pointer-events: none;
             animation: particleFloat 3s ease-out forwards;
@@ -396,6 +411,14 @@
                 margin-top: 10px;
             }
             
+            .mobile-only {
+                display: inline;
+            }
+            
+            .desktop-only {
+                display: none;
+            }
+            
             .ranking {
                 margin-top: 15px;
                 font-size: 12px;
@@ -436,6 +459,66 @@
                 font-size: 11px;
             }
         }
+        
+        /* Landscape mode for mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                justify-content: flex-start;
+                padding-top: 10px;
+            }
+            
+            .message {
+                font-size: 16px;
+                margin: 5px 0;
+            }
+            
+            .game-container,
+            .start-screen {
+                height: 85vh;
+                max-height: 85vh;
+            }
+            
+            .instructions {
+                font-size: 11px;
+                margin-top: 5px;
+            }
+            
+            .ranking {
+                margin-top: 10px;
+                padding: 8px;
+                font-size: 10px;
+            }
+            
+            .ranking h3 {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+            
+            .reset-button {
+                padding: 6px 12px;
+                font-size: 12px;
+                margin-top: 8px;
+            }
+            
+            .start-title {
+                font-size: 24px;
+                line-height: 1.2;
+            }
+            
+            .start-subtitle {
+                font-size: 12px;
+            }
+            
+            .start-button {
+                padding: 12px 30px;
+                font-size: 18px;
+            }
+            
+            #playerNameInput {
+                padding: 8px 15px !important;
+                font-size: 14px !important;
+            }
+        }
     </style>
 
 </head>
@@ -443,22 +526,33 @@
     <canvas class="matrix-bg" id="matrixCanvas"></canvas>
 
     <div class="message">
-        🎮 CYBER X-MAS RUNNER 🎮
-        <span>[ Familliy Guggenbühl ]</span>
+        👾 XMAS 2025 👾
+        <span>[ CLASSIC ARCADE - Familliy Guggenbühl ]</span>
     </div>
     <div class="countdown" id="countdown"></div>
  
     <div class="start-screen" id="startScreen" style="display: flex;">
-        <div class="start-title">CYBER<br/>X-MAS<br/>2025</div>
-        <div class="start-subtitle">⚡ Jump over Santa & collect bonuses ⚡<br/>🌀 Enter the Upside Down 🌀</div>
-        <button class="start-button" onclick="startGame()">▶ START GAME</button>
+        <div class="start-title">SPACE<br/>INVADERS<br/>ARCADE</div>
+        <div class="start-subtitle">🚀 Destroy the alien invaders! 👾<br/>⚡ Classic arcade action ⚡</div>
+        <div style="margin: 10px 0;">
+            <input type="text" id="playerNameInput" placeholder="Enter your name" 
+                   maxlength="15"
+                   style="padding: 10px 20px; font-size: 18px; font-family: 'Orbitron', monospace; 
+                          background: rgba(0,0,0,0.8); color: #00ff00; border: 2px solid #00ff00; 
+                          border-radius: 5px; text-align: center; box-shadow: 0 0 10px #00ff00;
+                          outline: none;">
+        </div>
+        <button class="start-button" onclick="startGame()">▶ INSERT COIN</button>
     </div>
  
     <div class="game-container" id="gameContainer" style="display: none;">
         <div class="score" id="score">SCORE: 0</div>
         <div class="santa" id="santa"></div>
     </div>
-    <div class="instructions" id="instructions" style="display: none;">[ SPACE / TAP TO JUMP ] - Collect 🎁 for BONUS</div>
+    <div class="instructions" id="instructions" style="display: none;">
+        <span class="desktop-only">[ ← → ARROWS or A/D TO MOVE ] - [ SPACE TO SHOOT ]</span>
+        <span class="mobile-only">[ DRAG TO MOVE ] - [ TAP TO SHOOT ]</span>
+    </div>
     <div class="ranking" id="ranking">
         <h3>⚡ LEADERBOARD ⚡</h3>
         <ul id="rankingList"></ul>
@@ -467,6 +561,6 @@
     <div class="version">
         <span id="version">Version: </span>
     </div>
-    <script src="game.js?v=20251116-4"></script>
+    <script src="game.js?v=20251116-13"></script>
 </body>
 </html>
