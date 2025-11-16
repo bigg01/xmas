@@ -532,9 +532,38 @@ function winGame() {
 }
 
 // Backend API URL - change this to your server URL
-const API_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:8080/api' 
-    : '/api';  // Use relative path in production
+// Backend API URL - tries multiple endpoints in order
+const API_ENDPOINTS = [
+    'https://xmas.guggenbuehl.net/api',
+    'http://santa-backend:8080/api',
+    'http://santa.apps.g01.containerize.ch/api',
+    'http://localhost:8080/api'
+];
+
+let API_URL = API_ENDPOINTS[0];
+
+// Test endpoints and use the first one that responds
+async function findWorkingEndpoint() {
+    for (const endpoint of API_ENDPOINTS) {
+        try {
+            const response = await fetch(`${endpoint}/health`, { 
+                method: 'GET',
+                timeout: 2000 
+            });
+            if (response.ok) {
+                API_URL = endpoint;
+                console.log(`Using API endpoint: ${API_URL}`);
+                return;
+            }
+        } catch (err) {
+            console.log(`Endpoint ${endpoint} not available`);
+        }
+    }
+    console.warn('No API endpoints available, using default');
+}
+
+// Initialize endpoint before loading rankings
+findWorkingEndpoint().then(() => loadRankings());
 
 window.globalRankings = [];
 

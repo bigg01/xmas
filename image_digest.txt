@@ -1,1 +1,1 @@
-docker.io/bigg01/santa@sha256:dc87db1302bbcb822bf1a88936e503fb56befa92ea0798e10ff6c6cb5975069a
+docker.io/bigg01/santa@sha256:6f977d72f10f404d67bd02d1114a48b5ae138121cc709cfdbcef51b2b99cfc28
