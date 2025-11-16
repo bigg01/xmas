@@ -150,7 +150,7 @@ function startGame() {
     
     playerName = nameInput.value.trim();
     if (!playerName) {
-        playerName = familyNames[Math.floor(Math.random() * familyNames.length)];
+        playerName = spaceHeroes[Math.floor(Math.random() * spaceHeroes.length)];
     }
     
     startScreen.style.display = 'none';
