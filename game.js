@@ -207,9 +207,10 @@ function initGame() {
         }
     }
     
+    // Create player after GO! message disappears (wait 1 second to be safe)
     setTimeout(() => {
         player.element = createPlayer();
-    }, 800);
+    }, 1000);
     
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
