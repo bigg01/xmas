@@ -50,6 +50,44 @@
             opacity: 0.15;
             z-index: 0;
         }
+
+        /* Advent badges */
+        .advent {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            gap: 8px;
+            z-index: 999;
+        }
+
+        .advent-day {
+            background: rgba(0,0,0,0.6);
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 6px 10px;
+            font-weight: 700;
+            border-radius: 6px;
+            font-size: 12px;
+            text-shadow: 0 0 6px #00ff00;
+            opacity: 0.5;
+            transition: all 200ms ease;
+            cursor: default;
+            user-select: none;
+        }
+
+        /* hide numeric label until active */
+        .advent-day .advent-label { display: none; margin-left:6px; }
+
+        .advent-day.active {
+            background: linear-gradient(135deg, #00ff00, #00ffff);
+            color: #001;
+            box-shadow: 0 0 12px #00ff00, 0 0 20px #00ffff;
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .advent-day.active .advent-label { display: inline-block; }
         
         .game-container {
             position: relative;
@@ -522,6 +560,13 @@
     <div class="ranking" id="ranking">
         <h3>⚡ LEADERBOARD ⚡</h3>
         <ul id="rankingList"></ul>
+    </div>
+    <!-- Advent badges -->
+    <div class="advent" id="advent">
+        <div class="advent-day" data-day="1"><span class="advent-dot">★</span><span class="advent-label">1</span></div>
+        <div class="advent-day" data-day="2"><span class="advent-dot">★</span><span class="advent-label">2</span></div>
+        <div class="advent-day" data-day="3"><span class="advent-dot">★</span><span class="advent-label">3</span></div>
+        <div class="advent-day" data-day="4"><span class="advent-dot">★</span><span class="advent-label">4</span></div>
     </div>
     <div class="version">
         <span id="version">Version: </span>

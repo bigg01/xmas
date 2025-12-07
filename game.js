@@ -183,6 +183,26 @@ let player, aliens = [], playerLasers = [], alienLasers = [];
 let score = 0, gameOver = false, alienDirection = 1, alienSpeed = 1;
 let gameLoop, shootCooldown = false;
 let currentLevel = 1;
+let alienShootTimer = null;
+
+// Level configuration: more levels but easier progression.
+// Each entry controls the number of aliens, their movement speed, and the
+// approximate alien shooting interval (ms). Levels are 1-indexed.
+const LEVELS = [
+    /* 1 */ { aliens: 2,  speed: 0.6, shootInterval: 2200 },
+    /* 2 */ { aliens: 3,  speed: 0.65, shootInterval: 2000 },
+    /* 3 */ { aliens: 4,  speed: 0.7, shootInterval: 1850 },
+    /* 4 */ { aliens: 5,  speed: 0.75, shootInterval: 1700 },
+    /* 5 */ { aliens: 6,  speed: 0.8, shootInterval: 1550 },
+    /* 6 */ { aliens: 8,  speed: 0.85, shootInterval: 1450 },
+    /* 7 */ { aliens: 10, speed: 0.95, shootInterval: 1350 },
+    /* 8 */ { aliens: 12, speed: 1.05, shootInterval: 1250 },
+    /* 9 */ { aliens: 16, speed: 1.15, shootInterval: 1150 },
+    /*10 */ { aliens: 20, speed: 1.25, shootInterval: 1050 },
+    /*11 */ { aliens: 25, speed: 1.35, shootInterval: 950  },
+    /*12 */ { aliens: 30, speed: 1.5,  shootInterval: 850  }
+];
+const MAX_LEVELS = LEVELS.length;
 
 function initGame(newLevel = false) {
     const gameContainer = document.getElementById('gameContainer');
@@ -229,8 +249,10 @@ function initGame(newLevel = false) {
         element: null
     };
     
-    // Calculate number of aliens based on level: 2, 4, 8, 16, 30 max
-    let alienCount = Math.min(Math.pow(2, currentLevel), 30);
+    // Determine level configuration (fallback to last level if beyond range)
+    const cfg = LEVELS[Math.max(0, Math.min(currentLevel - 1, LEVELS.length - 1))];
+    let alienCount = cfg.aliens;
+    alienSpeed = cfg.speed;
     
     // Responsive alien grid - adjust based on alien count
     const containerWidth = gameContainer.offsetWidth;
@@ -305,8 +327,13 @@ function initGame(newLevel = false) {
         }
     });
     
+    // Start main loop
     gameLoop = setInterval(update, 1000 / 60);
-    setInterval(() => { if (!gameOver && aliens.length > 0) alienShoot(); }, 1500);
+
+    // Clear previous alien shoot timer if present
+    if (alienShootTimer) clearInterval(alienShootTimer);
+    // Use level-specific shooting interval (more levels but easier early on)
+    alienShootTimer = setInterval(() => { if (!gameOver && aliens.length > 0) alienShoot(); }, cfg.shootInterval);
 }
 
 function createPlayer() {
@@ -471,6 +498,7 @@ function isColliding(a, b) {
 function endGame() {
     gameOver = true;
     clearInterval(gameLoop);
+    if (alienShootTimer) { clearInterval(alienShootTimer); alienShootTimer = null; }
     playSound('death');
     saveScore(score);
     displayRanking();
@@ -484,16 +512,14 @@ function endGame() {
 function winGame() {
     gameOver = true;
     clearInterval(gameLoop);
+    if (alienShootTimer) { clearInterval(alienShootTimer); alienShootTimer = null; }
     playSound('win');
     score += 100;
     currentLevel++;
-    
-    const maxAliens = Math.min(Math.pow(2, currentLevel), 30);
-    
-    // Check if we've completed all levels (level where we'd have 30+ aliens)
-    if (maxAliens >= 30 && currentLevel > 5) {
+    // If we've advanced past the configured levels, treat as game completion
+    if (currentLevel > MAX_LEVELS) {
         // Beat the game!
-        document.getElementById('score').textContent = `SCORE: ${score} | LEVEL: ${currentLevel - 1} COMPLETE!`;
+        document.getElementById('score').textContent = `SCORE: ${score} | LEVEL: ${MAX_LEVELS} COMPLETE!`;
         saveScore(score);
         displayRanking();
         setTimeout(() => {
@@ -522,6 +548,15 @@ function winGame() {
                     countdown.textContent = 'GO!';
                     setTimeout(() => {
                         countdown.style.display = 'none';
+                        // If we've exceeded MAX_LEVELS, treat as final win
+                        if (currentLevel > MAX_LEVELS) {
+                            // Show completion
+                            document.getElementById('score').textContent = `SCORE: ${score} | LEVEL: ${MAX_LEVELS} COMPLETE!`;
+                            saveScore(score);
+                            displayRanking();
+                            setTimeout(() => { document.location.reload(); }, 500);
+                            return;
+                        }
                         initGame(false);
                     }, 500);
                     clearInterval(countdownInterval);
@@ -659,6 +694,50 @@ function resetRanking() {
     }
 }
 
+// Render Advent badges (Advent 1-4).
+// Only the exact matching advent day becomes active (not cumulative).
+// Example: on Dec 2 only the badge with data-day="2" is active.
+// You can override with `?advent=n` (n between 0 and 4) for testing;
+// n=0 hides all badges.
+function renderAdvent() {
+    const container = document.getElementById('advent');
+    if (!container) return;
+
+    const today = new Date();
+    let activeDay = 0;
+    // December is month 11 in JS Date
+    if (today.getMonth() === 11) {
+        const todayDate = today.getDate();
+        // Only consider days 1-4 for these badges
+        if (todayDate >= 1 && todayDate <= 4) activeDay = todayDate;
+    }
+
+    // URL override for testing: ?advent=2 (activates only day 2)
+    try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('advent')) {
+            const v = parseInt(params.get('advent'), 10);
+            if (!isNaN(v)) activeDay = Math.max(0, Math.min(4, v));
+        }
+    } catch (e) { /* ignore */ }
+
+    let anyActive = false;
+    container.querySelectorAll('.advent-day').forEach(el => {
+        const day = parseInt(el.getAttribute('data-day') || '0', 10);
+        if (day > 0 && day === activeDay) {
+            el.classList.add('active');
+            anyActive = true;
+        } else {
+            el.classList.remove('active');
+        }
+    });
+
+    // If no advents active, hide the container entirely
+    container.style.display = anyActive ? 'flex' : 'none';
+}
+
+// Render Advent badges, then start other UI tasks
+renderAdvent();
 createSnowflakes();
 loadRankings();
 document.getElementById('version').textContent = 'Version: Space Invaders v2.0 Mobile on - k8s homelab, AI generated, https://www.containerize.ch';
